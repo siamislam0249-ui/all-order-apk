@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Log in - Tiffin Desk{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-card__mark">TD</div>
+    <h1 class="auth-card__title">Welcome back</h1>
+    <p class="auth-card__sub">Log in to choose today's lunch or browse the common menu.</p>
+
+    <form method="POST" action="{{ url_for('login') }}" class="form" novalidate>
+      <label class="field">
+        <span class="field__label">Username</span>
+        <input type="text" name="username" required autofocus autocomplete="username">
+      </label>
+      <label class="field">
+        <span class="field__label">Password</span>
+        <input type="password" name="password" required autocomplete="current-password">
+      </label>
+      <button type="submit" class="btn btn--primary btn--block">Log in</button>
+    </form>
+
+    <p class="auth-card__foot">
+      New here? <a href="{{ url_for('register') }}">Create an account</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% import "_food_card.html" as cards %}
+{% block title %}Daily Lunch Menu - Tiffin Desk{% endblock %}
+{% block content %}
+<div class="menu-page">
+  <a href="{{ url_for('menu_home') }}" class="back-link">&larr; Back to menu</a>
+
+  <div class="ticket-banner">
+    <div class="ticket-banner__perf"></div>
+    <div class="ticket-banner__body">
+      <span class="ticket-banner__eyebrow">Main Menu</span>
+      <h1 class="ticket-banner__title">Today's Daily Lunch Menu</h1>
+      <p class="ticket-banner__sub">Only items marked available today are shown below. Select what you'd like and set a quantity.</p>
+    </div>
+  </div>
+
+  {% if items %}
+    <div class="food-grid">
+      {% for item in items %}
+        {{ cards.food_card(item, cart.get(item.id|string, 0)) }}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <p>No Daily Lunch Menu items are available right now.</p>
+      <p class="empty-state__hint">Check back soon, or ask an admin to update today's menu.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

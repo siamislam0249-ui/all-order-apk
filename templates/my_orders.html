@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}My Orders - Tiffin Desk{% endblock %}
+{% block content %}
+<div class="menu-page">
+  <h1 class="page-title">My orders</h1>
+
+  {% if orders %}
+    <div class="order-ticket-grid">
+      {% for order in orders %}
+        <a href="{{ url_for('order_detail', order_id=order.id) }}" class="order-ticket">
+          <div class="order-ticket__perf"></div>
+          <div class="order-ticket__body">
+            <span class="order-ticket__code">{{ order.order_code }}</span>
+            <span class="status-pill status-pill--{{ order.status|replace(' ', '-')|lower }}">{{ order.status }}</span>
+            <span class="order-ticket__date">{{ order.created_at.strftime('%d %b %Y, %I:%M %p') }}</span>
+            <ul class="order-ticket__items">
+              {% for oi in order.items[:3] %}
+                <li>{{ oi.quantity }}&times; {{ oi.food_name }}</li>
+              {% endfor %}
+              {% if order.items|length > 3 %}
+                <li>+{{ order.items|length - 3 }} more</li>
+              {% endif %}
+            </ul>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <p>You haven't placed any orders yet.</p>
+      <a href="{{ url_for('menu_home') }}" class="btn btn--primary">Browse the menu</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Register - Tiffin Desk{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-card__mark">TD</div>
+    <h1 class="auth-card__title">Create your account</h1>
+    <p class="auth-card__sub">Register with a username and password to start ordering.</p>
+
+    <form method="POST" action="{{ url_for('register') }}" class="form" novalidate>
+      <label class="field">
+        <span class="field__label">Username</span>
+        <input type="text" name="username" value="{{ username }}" required minlength="3" autofocus autocomplete="username">
+      </label>
+      <label class="field">
+        <span class="field__label">Password</span>
+        <input type="password" name="password" required minlength="6" autocomplete="new-password">
+        <span class="field__hint">At least 6 characters.</span>
+      </label>
+      <label class="field">
+        <span class="field__label">Confirm password</span>
+        <input type="password" name="confirm_password" required minlength="6" autocomplete="new-password">
+      </label>
+      <button type="submit" class="btn btn--primary btn--block">Register</button>
+    </form>
+
+    <p class="auth-card__foot">
+      Already have an account? <a href="{{ url_for('login') }}">Log in</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

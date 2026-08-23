@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Manage Menu - Tiffin Desk{% endblock %}
+{% block content %}
+<div class="admin-page">
+  {% include "admin/_admin_nav.html" %}
+
+  <h1 class="page-title">Menu items</h1>
+
+  <details class="add-item-panel">
+    <summary class="btn btn--primary">+ Add new food item</summary>
+    <form method="POST" action="{{ url_for('admin_menu_add') }}" class="form form--grid">
+      <label class="field">
+        <span class="field__label">Food name</span>
+        <input type="text" name="name" required>
+      </label>
+      <label class="field">
+        <span class="field__label">Menu type</span>
+        <select name="menu_type" required>
+          <option value="daily">Daily Lunch Menu</option>
+          <option value="common">Common Menu</option>
+        </select>
+      </label>
+      <label class="field field--wide">
+        <span class="field__label">Description (optional)</span>
+        <input type="text" name="description">
+      </label>
+      <label class="field field--wide">
+        <span class="field__label">Image URL (optional)</span>
+        <input type="url" name="image_url" placeholder="https://...">
+      </label>
+      <button type="submit" class="btn btn--primary">Add item</button>
+    </form>
+  </details>
+
+  <h2 class="section-title">Daily Lunch Menu items</h2>
+  {% if daily_items %}
+    <div class="admin-item-list">
+      {% for item in daily_items %}
+        {% include "admin/_menu_item_row.html" %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="empty-state">No Daily Lunch Menu items yet. Add one above.</p>
+  {% endif %}
+
+  <h2 class="section-title">Common Menu items</h2>
+  {% if common_items %}
+    <div class="admin-item-list">
+      {% for item in common_items %}
+        {% include "admin/_menu_item_row.html" %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="empty-state">No Common Menu items yet. Add one above.</p>
+  {% endif %}
+</div>
+{% endblock %}

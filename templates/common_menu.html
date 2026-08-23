@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% import "_food_card.html" as cards %}
+{% block title %}Common Menu - Tiffin Desk{% endblock %}
+{% block content %}
+<div class="menu-page">
+  <a href="{{ url_for('menu_home') }}" class="back-link">&larr; Back to menu</a>
+
+  <div class="section-banner">
+    <span class="section-banner__eyebrow">Common Menu</span>
+    <h1 class="section-banner__title">Everyday items</h1>
+    <p class="section-banner__sub">Available any day &mdash; add these alongside or separately from the lunch menu.</p>
+  </div>
+
+  {% if items %}
+    <div class="food-grid">
+      {% for item in items %}
+        {{ cards.food_card(item, cart.get(item.id|string, 0)) }}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <p>No Common Menu items are available right now.</p>
+      <p class="empty-state__hint">Check back soon, or ask an admin to add items.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

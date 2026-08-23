@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Order Basket - Tiffin Desk{% endblock %}
+{% block content %}
+<div class="menu-page">
+  <a href="{{ url_for('menu_home') }}" class="back-link">&larr; Back to menu</a>
+  <h1 class="page-title">Your order basket</h1>
+
+  {% if line_items %}
+    <ul class="basket-list">
+      {% for row in line_items %}
+        <li class="basket-row">
+          <div class="basket-row__info">
+            <span class="basket-row__name">{{ row.item.name }}</span>
+            <span class="basket-row__tag">{{ 'Daily Lunch Menu' if row.item.menu_type == 'daily' else 'Common Menu' }}</span>
+          </div>
+          <span class="basket-row__qty">Qty: {{ row.quantity }}</span>
+          <form method="POST" action="{{ url_for('cart_remove', food_id=row.item.id) }}">
+            <button type="submit" class="btn btn--ghost btn--sm">Remove</button>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <form method="POST" action="{{ url_for('cart_confirm') }}" class="basket-confirm">
+      <p class="basket-confirm__note">No price or payment is collected. Placing the order sends it straight to the kitchen for confirmation.</p>
+      <button type="submit" class="btn btn--primary btn--block">Place order</button>
+    </form>
+  {% else %}
+    <div class="empty-state">
+      <p>Your basket is empty.</p>
+      <a href="{{ url_for('menu_home') }}" class="btn btn--primary">Browse the menu</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

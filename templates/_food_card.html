@@ -1,0 +1,35 @@
+{% macro food_card(item, in_cart_qty=0) %}
+<article class="food-card">
+  <div class="food-card__media">
+    {% if item.image_url %}
+      <img src="{{ item.image_url }}" alt="{{ item.name }}" loading="lazy">
+    {% else %}
+      <div class="food-card__placeholder" aria-hidden="true">{{ item.name[:1] }}</div>
+    {% endif %}
+  </div>
+  <div class="food-card__body">
+    <h3 class="food-card__name">{{ item.name }}</h3>
+    {% if item.description %}
+      <p class="food-card__desc">{{ item.description }}</p>
+    {% endif %}
+  </div>
+  <form method="POST" action="{{ url_for('cart_add') }}" class="food-card__form">
+    <input type="hidden" name="food_id" value="{{ item.id }}">
+    <input type="hidden" name="return_to" value="{{ request.path }}">
+    <label class="qty-select">
+      <span class="sr-only">Quantity</span>
+      <select name="quantity">
+        {% for n in range(1, 11) %}
+          <option value="{{ n }}">{{ n }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <button type="submit" class="btn btn--primary btn--sm">
+      {% if in_cart_qty %}Add more{% else %}Select{% endif %}
+    </button>
+  </form>
+  {% if in_cart_qty %}
+    <span class="food-card__inbasket">{{ in_cart_qty }} in your basket</span>
+  {% endif %}
+</article>
+{% endmacro %}

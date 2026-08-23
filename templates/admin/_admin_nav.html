@@ -1,0 +1,9 @@
+<nav class="admin-nav">
+  <a href="{{ url_for('admin_dashboard') }}" class="{{ 'is-active' if request.endpoint == 'admin_dashboard' }}">Dashboard</a>
+  <a href="{{ url_for('admin_orders') }}" class="{{ 'is-active' if request.endpoint in ['admin_orders'] }}">
+    Orders
+    {% if pending_order_count and pending_order_count > 0 %}<span class="badge badge--alert">{{ pending_order_count }}</span>{% endif %}
+  </a>
+  <a href="{{ url_for('admin_menu') }}" class="{{ 'is-active' if request.endpoint == 'admin_menu' }}">Menu items</a>
+  <a href="{{ url_for('admin_users') }}" class="{{ 'is-active' if request.endpoint == 'admin_users' }}">Users</a>
+</nav>

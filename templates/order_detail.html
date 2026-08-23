@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Order {{ order.order_code }} - Tiffin Desk{% endblock %}
+{% block content %}
+<div class="menu-page">
+  <a href="{{ url_for('my_orders') }}" class="back-link">&larr; Back to my orders</a>
+
+  <div class="order-receipt">
+    <div class="order-receipt__perf"></div>
+    <div class="order-receipt__body">
+      <span class="order-receipt__eyebrow">Order confirmed</span>
+      <h1 class="order-receipt__code">{{ order.order_code }}</h1>
+      <span class="status-pill status-pill--{{ order.status|replace(' ', '-')|lower }}">{{ order.status }}</span>
+      <p class="order-receipt__date">Placed {{ order.created_at.strftime('%d %b %Y at %I:%M %p') }}</p>
+
+      <ul class="order-receipt__items">
+        {% for oi in order.items %}
+          <li>
+            <span>{{ oi.food_name }}</span>
+            <span class="order-receipt__tag">{{ 'Daily Lunch' if oi.menu_type == 'daily' else 'Common' }}</span>
+            <span class="order-receipt__qty">&times;{{ oi.quantity }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <ol class="status-track">
+        {% for s in statuses %}
+          <li class="{{ 'is-done' if statuses.index(s) <= statuses.index(order.status) else '' }}">{{ s }}</li>
+        {% endfor %}
+      </ol>
+
+      <p class="order-receipt__note">No price or payment information is tracked for this order.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

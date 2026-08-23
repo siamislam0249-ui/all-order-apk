@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Menu - Tiffin Desk{% endblock %}
+{% block content %}
+<div class="chooser">
+  <p class="chooser__eyebrow">What would you like to order?</p>
+  <h1 class="chooser__title">Pick a menu</h1>
+  <p class="chooser__sub">Daily Lunch Menu and Common Menu are kept separate on purpose &mdash; browse one at a time.</p>
+
+  <div class="chooser__grid">
+    <a href="{{ url_for('menu_daily') }}" class="menu-choice menu-choice--daily">
+      <span class="menu-choice__tag">Changes every day</span>
+      <span class="menu-choice__title">Main Menu</span>
+      <span class="menu-choice__desc">Today's Daily Lunch Menu &mdash; rice, curry and the day's specials.</span>
+      <span class="menu-choice__cta">View Daily Lunch Menu &rarr;</span>
+    </a>
+
+    <a href="{{ url_for('menu_common') }}" class="menu-choice menu-choice--common">
+      <span class="menu-choice__tag">Always available</span>
+      <span class="menu-choice__title">Common Menu</span>
+      <span class="menu-choice__desc">Paratha, tea, coffee, noodles and other everyday items.</span>
+      <span class="menu-choice__cta">View Common Menu &rarr;</span>
+    </a>
+  </div>
+
+  <div class="chooser__links">
+    <a href="{{ url_for('my_orders') }}">Track my orders &rarr;</a>
+    <a href="{{ url_for('cart_view') }}">View order basket &rarr;</a>
+  </div>
+</div>
+{% endblock %}

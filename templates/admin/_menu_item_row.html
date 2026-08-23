@@ -1,0 +1,46 @@
+<div class="admin-item-row {{ '' if item.is_available else 'is-hidden' }}">
+  <div class="admin-item-row__main">
+    <span class="admin-item-row__name">{{ item.name }}</span>
+    {% if item.description %}<span class="admin-item-row__desc">{{ item.description }}</span>{% endif %}
+    {% if not item.is_available %}<span class="pill pill--muted">Hidden today</span>{% endif %}
+  </div>
+
+  <div class="admin-item-row__actions">
+    <form method="POST" action="{{ url_for('admin_menu_toggle', item_id=item.id) }}" class="inline-form">
+      <button type="submit" class="btn btn--ghost btn--sm">
+        {{ 'Hide' if item.is_available else 'Show' }}
+      </button>
+    </form>
+
+    <details class="edit-panel">
+      <summary class="btn btn--ghost btn--sm">Edit</summary>
+      <form method="POST" action="{{ url_for('admin_menu_edit', item_id=item.id) }}" class="form form--grid form--edit">
+        <label class="field">
+          <span class="field__label">Food name</span>
+          <input type="text" name="name" value="{{ item.name }}" required>
+        </label>
+        <label class="field">
+          <span class="field__label">Menu type</span>
+          <select name="menu_type">
+            <option value="daily" {{ 'selected' if item.menu_type == 'daily' }}>Daily Lunch Menu</option>
+            <option value="common" {{ 'selected' if item.menu_type == 'common' }}>Common Menu</option>
+          </select>
+        </label>
+        <label class="field field--wide">
+          <span class="field__label">Description</span>
+          <input type="text" name="description" value="{{ item.description or '' }}">
+        </label>
+        <label class="field field--wide">
+          <span class="field__label">Image URL</span>
+          <input type="url" name="image_url" value="{{ item.image_url or '' }}">
+        </label>
+        <button type="submit" class="btn btn--primary btn--sm">Save changes</button>
+      </form>
+    </details>
+
+    <form method="POST" action="{{ url_for('admin_menu_delete', item_id=item.id) }}" class="inline-form"
+          onsubmit="return confirm('Delete {{ item.name }}? This cannot be undone.');">
+      <button type="submit" class="btn btn--danger btn--sm">Delete</button>
+    </form>
+  </div>
+</div>

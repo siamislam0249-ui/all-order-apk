@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard - Tiffin Desk{% endblock %}
+{% block content %}
+<div class="admin-page">
+  {% include "admin/_admin_nav.html" %}
+
+  <h1 class="page-title">Admin dashboard</h1>
+
+  {% if pending_orders > 0 %}
+    <div class="notice notice--alert">
+      <strong>{{ pending_orders }}</strong> new order{{ 's' if pending_orders != 1 }} waiting to be confirmed.
+      <a href="{{ url_for('admin_orders', status='Pending') }}">Review now &rarr;</a>
+    </div>
+  {% endif %}
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <span class="stat-card__num">{{ total_users }}</span>
+      <span class="stat-card__label">Registered users</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__num">{{ total_orders }}</span>
+      <span class="stat-card__label">Total orders</span>
+    </div>
+    <div class="stat-card stat-card--alert">
+      <span class="stat-card__num">{{ pending_orders }}</span>
+      <span class="stat-card__label">Pending orders</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__num">{{ total_items }}</span>
+      <span class="stat-card__label">Menu items</span>
+    </div>
+  </div>
+
+  <h2 class="section-title">Recent orders</h2>
+  {% if recent_orders %}
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Order</th><th>User</th><th>Placed</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody>
+          {% for order in recent_orders %}
+            <tr>
+              <td>{{ order.order_code }}</td>
+              <td>{{ order.user.username }}</td>
+              <td>{{ order.created_at.strftime('%d %b, %I:%M %p') }}</td>
+              <td><span class="status-pill status-pill--{{ order.status|replace(' ', '-')|lower }}">{{ order.status }}</span></td>
+              <td><a href="{{ url_for('order_detail', order_id=order.id) }}">View</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="empty-state">No orders yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

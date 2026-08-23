@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Users - Tiffin Desk{% endblock %}
+{% block content %}
+<div class="admin-page">
+  {% include "admin/_admin_nav.html" %}
+
+  <h1 class="page-title">Registered users</h1>
+
+  {% if users %}
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Username</th><th>Role</th><th>Joined</th><th>Orders placed</th></tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+            <tr>
+              <td>{{ u.username }}</td>
+              <td>{{ 'Admin' if u.is_admin else 'User' }}</td>
+              <td>{{ u.created_at.strftime('%d %b %Y') }}</td>
+              <td>{{ u.orders|length }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="empty-state">No users yet.</p>
+  {% endif %}
+</div>
+{% endblock %}
