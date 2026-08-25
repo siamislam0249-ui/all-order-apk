@@ -361,3 +361,18 @@ img { max-width: 100%; display: block; }
   .topbar__user .hello { display: none; }
   .order-receipt { flex-direction: row; }
 }
+
+.food-comment input {
+  width: 180px;
+  height: 32px;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 18px;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.food-comment span {
+  font-size: 12px;
+  margin-right: 5px;
+}
