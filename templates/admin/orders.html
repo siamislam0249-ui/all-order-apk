@@ -26,7 +26,15 @@
               <td>{{ order.user.username }}</td>
               <td>
                 {% for oi in order.items %}
-                  <div class="mini-line">{{ oi.quantity }}&times; {{ oi.food_name }} <em>({{ 'Daily' if oi.menu_type == 'daily' else 'Common' }})</em></div>
+                  <div class="mini-line">
+                    {{ oi.quantity }}&times; {{ oi.food_name }}
+                    <em>({{ 'Daily' if oi.menu_type == 'daily' else 'Common' }})</em>
+                    {% if oi.comment %}
+                      <div style="margin-top: 4px; font-size: 13px;">
+                        <strong>Comment:</strong> {{ oi.comment }}
+                      </div>
+                    {% endif %}
+                  </div>
                 {% endfor %}
               </td>
               <td>{{ order.created_at.strftime('%d %b %Y, %I:%M %p') }}</td>
