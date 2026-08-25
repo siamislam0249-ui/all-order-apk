@@ -18,6 +18,12 @@
             <span>{{ oi.food_name }}</span>
             <span class="order-receipt__tag">{{ 'Daily Lunch' if oi.menu_type == 'daily' else 'Common' }}</span>
             <span class="order-receipt__qty">&times;{{ oi.quantity }}</span>
+
+            {% if oi.comment %}
+              <div style="margin-top: 5px; font-size: 14px;">
+                <strong>Comment:</strong> {{ oi.comment }}
+              </div>
+            {% endif %}
           </li>
         {% endfor %}
       </ul>
