@@ -193,6 +193,7 @@ def menu_common():
 def cart_add():
     food_id = request.form.get("food_id")
     quantity = request.form.get("quantity", "1")
+    comment = request.form.get("comment", "").strip()[:500]
     return_to = request.form.get("return_to") or url_for("menu_home")
 
     item = db.session.get(FoodItem, int(food_id)) if food_id else None
@@ -208,6 +209,11 @@ def cart_add():
     cart = get_cart()
     cart[str(item.id)] = cart.get(str(item.id), 0) + quantity
     session["cart"] = cart
+
+    comments = session.get("cart_comments", {})
+    comments[str(item.id)] = comment
+    session["cart_comments"] = comments
+
     session.modified = True
 
     flash(f"Added {item.name} to your order.", "success")
@@ -248,6 +254,8 @@ def cart_confirm():
     db.session.add(order)
     db.session.flush()  # get order.id before commit
 
+    comments = session.get("cart_comments", {})
+
     for food_id_str, qty in cart.items():
         item = db.session.get(FoodItem, int(food_id_str))
         if not item:
@@ -258,10 +266,12 @@ def cart_confirm():
             food_name=item.name,
             menu_type=item.menu_type,
             quantity=qty,
+            comment=comments.get(food_id_str, ""),
         ))
 
     db.session.commit()
     session["cart"] = {}
+    session["cart_comments"] = {}
     session.modified = True
 
     flash("Order placed successfully!", "success")

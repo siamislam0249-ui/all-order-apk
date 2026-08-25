@@ -90,5 +90,6 @@ class OrderItem(db.Model):
     food_name = db.Column(db.String(120), nullable=False)  # snapshot at order time
     menu_type = db.Column(db.String(10), nullable=False)
     quantity = db.Column(db.Integer, default=1, nullable=False)
+    comment = db.Column(db.String(500), nullable=True)
 
     food_item = db.relationship("FoodItem", backref="order_items", lazy=True)
