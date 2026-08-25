@@ -376,3 +376,38 @@ img { max-width: 100%; display: block; }
   font-size: 12px;
   margin-right: 5px;
 }
+
+.food-card__form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.food-comment {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 140px;
+  min-width: 0;
+}
+
+.food-comment span {
+  font-size: 12px;
+  margin: 0;
+}
+
+.food-comment input {
+  width: 140px;
+  height: 30px;
+  padding: 5px 10px;
+  border: 1px solid #bbb;
+  border-radius: 15px;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+.food-card__form .btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
