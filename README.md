@@ -1,6 +1,6 @@
 # Tiffin Desk — Food Ordering & Menu Management
 
-A food *selection and order-tracking* website built with Flask + SQLite.
+A food *selection and order-tracking* website built with Flask + supabase.
 There is **no price, currency, payment, or checkout system anywhere** —
 users select food and quantities, place an order, and track its status.
 Admins manage the menu, users, and order statuses.
