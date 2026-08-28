@@ -6,3 +6,4 @@ gunicorn
 
 psycopg2-binary==2.9.12
 Flask-Mail==0.10.0
+python-dotenv==1.2.3
