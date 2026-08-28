@@ -5,3 +5,4 @@ Werkzeug==3.0.3
 gunicorn
 
 psycopg2-binary==2.9.12
+Flask-Mail==0.10.0

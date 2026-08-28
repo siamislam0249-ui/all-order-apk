@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 """
 Food Ordering & Menu Management - main Flask application.
 
@@ -8,6 +11,8 @@ See README.md for full setup instructions.
 """
 import os
 import uuid
+from flask_mail import Mail, Message
+
 from datetime import datetime
 from functools import wraps
 
@@ -28,9 +33,16 @@ os.makedirs(INSTANCE_DIR, exist_ok=True)
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-secret-key-change-me")
+app.config["MAIL_SERVER"] = os.environ.get("MAIL_SERVER", "smtp.gmail.com")
+app.config["MAIL_PORT"] = int(os.environ.get("MAIL_PORT", 587))
+app.config["MAIL_USE_TLS"] = os.environ.get("MAIL_USE_TLS", "True").lower() == "true"
+app.config["MAIL_USERNAME"] = os.environ.get("MAIL_USERNAME")
+app.config["MAIL_PASSWORD"] = os.environ.get("MAIL_PASSWORD")
+app.config["MAIL_DEFAULT_SENDER"] = os.environ.get("MAIL_DEFAULT_SENDER")
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+mail = Mail(app)
 db.init_app(app)
 login_manager.init_app(app)
 with app.app_context():
@@ -99,12 +111,17 @@ def register():
 
     if request.method == "POST":
         username = request.form.get("username", "").strip()
+        email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
         confirm = request.form.get("confirm_password", "")
 
         errors = []
         if len(username) < 3:
             errors.append("Username must be at least 3 characters.")
+        if not email or "@" not in email:
+            errors.append("Please enter a valid email address.")
+        if User.query.filter_by(email=email).first():
+            errors.append("That email is already registered.")
         if len(password) < 6:
             errors.append("Password must be at least 6 characters.")
         if password != confirm:
@@ -117,7 +134,7 @@ def register():
                 flash(e, "error")
             return render_template("register.html", username=username)
 
-        user = User(username=username)
+        user = User(username=username, email=email)
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
@@ -148,6 +165,41 @@ def login():
 
     return render_template("login.html")
 
+
+@app.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password():
+    if request.method == "POST":
+        email = request.form.get("email", "").strip().lower()
+        user = User.query.filter_by(email=email).first()
+        if user:
+            token = user.get_reset_token()
+            reset_url = "https://all-order-apk.onrender.com" + url_for("reset_password", token=token)
+            msg = Message("Tiffin Desk - Password Reset", recipients=[email])
+            msg.body = f"Reset your password using this link:\n\n{reset_url}\n\nThis link will expire in 30 minutes."
+            mail.send(msg)
+        flash("If that email is registered, a password reset link has been sent.", "info")
+        return redirect(url_for("login"))
+    return render_template("forgot_password.html")
+
+@app.route("/reset-password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+    user = User.verify_reset_token(token)
+    if not user:
+        flash("This password reset link is invalid or expired.", "error")
+        return redirect(url_for("forgot_password"))
+    if request.method == "POST":
+        password = request.form.get("password", "")
+        confirm = request.form.get("confirm_password", "")
+        if len(password) < 6:
+            flash("Password must be at least 6 characters.", "error")
+        elif password != confirm:
+            flash("Passwords do not match.", "error")
+        else:
+            user.set_password(password)
+            db.session.commit()
+            flash("Password changed successfully. Please log in.", "success")
+            return redirect(url_for("login"))
+    return render_template("reset_password.html", token=token)
 
 @app.route("/logout")
 @login_required

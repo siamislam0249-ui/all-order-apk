@@ -31,6 +31,7 @@ class User(db.Model, UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False, index=True)
+    email = db.Column(db.String(120), unique=True, nullable=True)
     password_hash = db.Column(db.String(255), nullable=False)
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -39,6 +40,23 @@ class User(db.Model, UserMixin):
 
     def set_password(self, raw_password):
         self.password_hash = generate_password_hash(raw_password)
+
+    def get_reset_token(self):
+        from flask import current_app
+        from itsdangerous import URLSafeTimedSerializer
+        serializer = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
+        return serializer.dumps({"user_id": self.id}, salt="password-reset")
+
+    @staticmethod
+    def verify_reset_token(token, max_age=1800):
+        from flask import current_app
+        from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
+        serializer = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
+        try:
+            data = serializer.loads(token, salt="password-reset", max_age=max_age)
+            return User.query.get(data["user_id"])
+        except (BadSignature, SignatureExpired):
+            return None
 
     def check_password(self, raw_password):
         return check_password_hash(self.password_hash, raw_password)
