@@ -12,6 +12,7 @@ See README.md for full setup instructions.
 import os
 import uuid
 from flask_mail import Mail, Message
+import resend
 
 from datetime import datetime
 from functools import wraps
@@ -43,6 +44,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 mail = Mail(app)
+resend.api_key = os.environ.get("RESEND_API_KEY")
 db.init_app(app)
 login_manager.init_app(app)
 with app.app_context():
@@ -174,9 +176,22 @@ def forgot_password():
         if user:
             token = user.get_reset_token()
             reset_url = "https://all-order-apk.onrender.com" + url_for("reset_password", token=token)
-            msg = Message("Tiffin Desk - Password Reset", recipients=[email])
-            msg.body = f"Reset your password using this link:\n\n{reset_url}\n\nThis link will expire in 30 minutes."
-            mail.send(msg)
+            resend.Emails.send({
+                "from": "Tiffin Desk <onboarding@resend.dev>",
+                "to": [email],
+                "subject": "Tiffin Desk - Password Reset",
+                "html": f"""
+                    <h2>Tiffin Desk Password Reset</h2>
+                    <p>Click the button below to reset your password.</p>
+                    <p>
+                        <a href="{reset_url}"
+                           style="display:inline-block;padding:12px 20px;background:#2563eb;color:white;text-decoration:none;border-radius:6px;">
+                           Reset Password
+                        </a>
+                    </p>
+                    <p>This link will expire in 30 minutes.</p>
+                """
+            })
         flash("If that email is registered, a password reset link has been sent.", "info")
         return redirect(url_for("login"))
     return render_template("forgot_password.html")
